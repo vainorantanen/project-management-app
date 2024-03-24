@@ -101,3 +101,20 @@ export async function getTablesByWorkspaceId(workspaceId:string) {
         throw new Error(er.message)
     }
 }
+
+export async function getTasksByTableId(tableId:string) {
+    noStore()
+    try {
+
+        const res = await prisma.task.findMany({
+            where: {
+                tableId
+            }
+        })
+
+        return res
+    } catch (error) {
+        const er = error as Error
+        throw new Error(er.message)
+    }
+}

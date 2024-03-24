@@ -1,8 +1,8 @@
 "use server"
 
 import { revalidatePath } from "next/cache";
-import { AddCategoryState, AddTableState, AddWorkspaceState } from "./formStates";
-import { FormSchemaAddCategory, FormSchemaAddTable, FormSchemaAddWorkspace } from "./formSchemas";
+import { AddCategoryState, AddTableState, AddTaskState, AddWorkspaceState } from "./formStates";
+import { FormSchemaAddCategory, FormSchemaAddTable, FormSchemaAddTask, FormSchemaAddWorkspace } from "./formSchemas";
 import prisma from "@/utils/db";
 import { getUser } from "./data";
 import { getServerSession } from "next-auth";
@@ -170,6 +170,10 @@ try {
       throw new Error("Kirjaudu sisään")
     }
 
+    if (table.categories.includes(category)) {
+      throw new Error("Samanniminen kategoria on jo tässä taulussa")
+    }
+
     const newCatecogories = table.categories.concat(category)
 
     await prisma.table.update({
@@ -186,4 +190,71 @@ try {
     return {
       errorMessage: error instanceof Error ? error.message : "An error occurred",          };
 }
+}
+
+export async function addNewTask(
+  tableId: string,
+  category: string,
+  prevState: AddTaskState,
+  formData: FormData
+) {
+ 
+    const validatedFields = FormSchemaAddTask.safeParse({
+        description: formData.get('description'),
+        title: formData.get('title'),
+      });
+      
+      if (!validatedFields.success) {
+          return {
+            errors: validatedFields.error.flatten().fieldErrors,
+            errorMessage: 'Täytä tarvittavat tiedot',
+          };
+        }
+    
+        const { description, title,
+        } = validatedFields.data
+  
+    try {
+
+        if (!tableId) {
+          throw new Error("WorkspaceId missing")
+        }
+
+        const table = await prisma.table.findUnique({
+          where: {
+            id: tableId
+          }
+        })
+    
+        if (!table) {
+          throw new Error("workspace not found")
+        }
+        const session = await getServerSession(authOptions)
+  
+        if (!session || !session.user) {
+          throw new Error("Kirjaudu sisään")
+        }
+
+        await prisma.task.create({data: {
+          title,
+          description,
+          category,
+          user: {
+            connect: {
+              id: session.user.id
+            }
+          },
+          table: {
+            connect: {
+              id: tableId
+            }
+          }
+        }})
+
+        revalidatePath('/workspaces')
+        return {successMessage: 'Tallennettu'}
+    } catch(error) {
+        return {
+          errorMessage: error instanceof Error ? error.message : "An error occurred",          };
+    }
 }

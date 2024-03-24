@@ -1,7 +1,8 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/options"
-import { getTableById } from "@/app/lib/data"
+import { getTableById, getTasksByTableId } from "@/app/lib/data"
 import AddNewCategoryModal from "@/app/ui/modals/AddNewCategoryModal"
-import { Card, CardTitle } from "@/components/ui/card"
+import AddNewTaskModal from "@/app/ui/modals/AddNewTaskModal"
+import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card"
 import { getServerSession } from "next-auth"
 import { notFound } from "next/navigation"
 
@@ -21,6 +22,8 @@ export default async function Page({params}:any) {
         notFound()
     }
 
+    const tasks = await getTasksByTableId(params.tableId)
+
     return (
         <div>
             <h1>
@@ -33,6 +36,15 @@ export default async function Page({params}:any) {
                         <CardTitle>
                             {category}
                         </CardTitle>
+                        <CardContent>
+                            {tasks && tasks.filter(t => t.category === category).map(task => (
+                                <Card key={task.id}>
+                                    <CardTitle>{task.title}</CardTitle>
+                                    <CardDescription>{task.description}</CardDescription>
+                                </Card>
+                            ))}
+                        </CardContent>
+                        <AddNewTaskModal category={category} tableId={table.id} />
                     </Card>
                 ))
             ) : (

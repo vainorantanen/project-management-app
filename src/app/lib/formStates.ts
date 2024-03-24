@@ -24,3 +24,12 @@ export type AddWorkspaceState = {
     errorMessage?: string | null;
     successMessage?: string | null
   };
+
+  export type AddTaskState = {
+    errors?: {
+      title?: string[],
+      description?: string[]
+    };
+    errorMessage?: string | null;
+    successMessage?: string | null
+  };
