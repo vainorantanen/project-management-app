@@ -14,10 +14,57 @@ datasource db {
 }
 
 model User {
-  id String    @id @default(auto()) @map("_id") @db.ObjectId
-  name String?
-  email String @unique
-  password String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           String      @id @default(auto()) @map("_id") @db.ObjectId
+  name         String?
+  email        String      @unique
+  password     String
+  participantWorkspaceIds String[] @db.ObjectId
+  workspaceParticipancies   Workspace[] @relation("workspaceParticipants", fields: [participantWorkspaceIds], references: [id])
+  createdWorkspaces   Workspace[] @relation("createdWorkspaces")
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  createdTableIds String[]    @db.ObjectId
+  createdTables   Table[] @relation("createdTables")
+  createdTasks Task[] @relation("createdTasks")
+}
+
+model Workspace {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  title          String
+  description    String?
+  participantIds String[] @db.ObjectId
+  participants   User[]   @relation("workspaceParticipants", fields: [participantIds], references: [id])
+  user           User     @relation("createdWorkspaces", fields: [userId], references: [id])
+  userId         String   @db.ObjectId
+  tables   Table[]   @relation("workspaceTables")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model Table {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  title          String
+  description    String?
+  user           User     @relation("createdTables", fields: [userId], references: [id])
+  userId         String   @db.ObjectId
+  workspace          Workspace    @relation("workspaceTables", fields: [workspaceId], references: [id])
+  workspaceId         String   @db.ObjectId
+  tasks Task []
+  categories String[]
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+}
+
+model Task {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  title          String
+  description    String?
+  user           User     @relation("createdTasks", fields: [userId], references: [id])
+  userId         String   @db.ObjectId
+  table           Table     @relation(fields: [tableId], references: [id])
+  tableId         String   @db.ObjectId
+  category String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 }

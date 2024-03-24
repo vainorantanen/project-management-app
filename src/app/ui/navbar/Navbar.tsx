@@ -38,7 +38,7 @@ import { FaUser } from "react-icons/fa";
 import React from "react";
 import { cn } from "@/lib/utils";
 import { getServerSession } from "next-auth";
-import SignOutButton from "../SignOutButton";
+import SignOutButton from "../buttons/SignOutButton";
 
 export default function Navbar() {
 
