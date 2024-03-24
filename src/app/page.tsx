@@ -12,27 +12,7 @@ export default async function Home() {
 
   return (
   <div className="flex flex-col gap-2 justify-center items-center min-h-screen">
-    <Button>
-    <Link href={`/login`}>
-      Log in
-    </Link>
-    </Button>
-    <Button>
-    <Link href={`/register`}>
-      Register
-    </Link>
-    </Button>
-    <h1>Nextjs 14 project template</h1>
-    {session && session.user ? (
-        <div>
-          <p>Logged in as {session.user.email}</p>
-          <SignOutButton />
-        </div>
-      ) : (
-        <div>
-          <p>Not logged in</p>
-        </div>
-      )}
+    <h1>Proju etusivu</h1>
   </div>
   );
 }

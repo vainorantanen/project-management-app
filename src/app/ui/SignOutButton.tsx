@@ -8,7 +8,7 @@ export default function SignOutButton() {
 <Button className="flex" onClick={() =>
     signOut()
     }>
-    <span>Log out</span>
+    <span>Kirjaudu ulos</span>
     </Button>
     )
 }
