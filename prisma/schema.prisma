@@ -26,6 +26,7 @@ model User {
   createdTableIds String[]    @db.ObjectId
   createdTables   Table[] @relation("createdTables")
   createdTasks Task[] @relation("createdTasks")
+  isVerified Boolean @default(false)
 }
 
 model Workspace {

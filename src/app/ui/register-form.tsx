@@ -4,6 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { useState } from "react";
+import ToastContainerComponent from "./ToastContainerComponent";
+import { toast } from "react-toastify";
+import { sendRegisterEmail } from "../lib/functions";
 
 const stylesForText = "block uppercase tracking-wide text-black-700 text-sm font-bold"
 
@@ -62,12 +65,29 @@ export default function RegisterForm() {
       if (res.ok) {
         const form = e.target;
         form.reset();
-        setRegisterSuccess(true)
+        const sendMailRes = await sendRegisterEmail(email)
+
+        // status 200 = ok
+        if (sendMailRes.status === 200) {
+          //router.push("/kiitos-rekisteroitymisesta");
+          setRegisterSuccess(true)
+          // Scroll to section with id "register-email-confirm"
+        const registerEmailConfirmSection = document.getElementById('register-email-confirm');
+        if (registerEmailConfirmSection) {
+          registerEmailConfirmSection.scrollIntoView({ behavior: 'smooth' });
+        }
+        setLoading(false)
+        } else {
+          setLoading(false)
+          toast.error("Sähköpostin lähettäminen epäonnistui")
+        }
       } else {
         setLoading(false)
+        toast.error("Käyttäjän luominen epäonnistui")
       }
     } catch (error) {
       setLoading(false)
+      toast.error("Tapahtui jokin virhe rekisteröitymisessä")
     }
   };
 
@@ -89,21 +109,19 @@ export default function RegisterForm() {
 
   return (
     <div className="min-h-screen flex flex-col justify-center items-center">
+     <ToastContainerComponent />
       {registerSuccess && (
-        <div className="bg-sky-300 shadow-xl p-5 rounded-xl w-full max-w-md text-black">
-          <h1>User registered successfully</h1>
-          <div className="flex flex-row gap-2">
-            <Button>
-          <Link href={`/login`}>
-            Log in
-          </Link>
-          </Button>
-          <Button>
-          <Link href={`/home`}>
-            Home
-          </Link>
-          </Button>
-            </div>
+          <div
+          id="register-email-confirm"
+          className="p-4 max-w-lg mx-auto rounded-xl flex flex-col justify-start shadow-lg bg-sky-300 text-black my-3">
+            <h1 className="text-2xl font-bold my-3">Käyttäjä luotu onnistuneesti.</h1>
+            <p className="text-2xl my-2">Lähetimme sinulle vahvistussähköpostin. Vahvista vielä sähköpostisi.</p>
+            <p>Etkö saanut vahvistussähköpostia?</p>
+            <button
+            onClick={handleResendEmail}
+            className="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600">
+                Lähetä uusi vahvistus
+            </button>
         </div>
       )}
       {!registerSuccess && (
