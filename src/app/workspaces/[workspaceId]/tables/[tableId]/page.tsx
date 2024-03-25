@@ -1,7 +1,10 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/options"
+import { deleteTaskById } from "@/app/lib/actions"
 import { getTableById, getTasksByTableId } from "@/app/lib/data"
+import DeleteTaskButton from "@/app/ui/buttons/DeleteTaskButton"
 import AddNewCategoryModal from "@/app/ui/modals/AddNewCategoryModal"
 import AddNewTaskModal from "@/app/ui/modals/AddNewTaskModal"
+import ModifyTaskModal from "@/app/ui/modals/ModifyTaskModal"
 import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card"
 import { getServerSession } from "next-auth"
 import { notFound } from "next/navigation"
@@ -41,6 +44,9 @@ export default async function Page({params}:any) {
                                 <Card key={task.id}>
                                     <CardTitle>{task.title}</CardTitle>
                                     <CardDescription>{task.description}</CardDescription>
+                                    <DeleteTaskButton taskId={task.id} deleteTask={deleteTaskById} />
+                                    <ModifyTaskModal task={task}
+                                    categories={table.categories} />
                                 </Card>
                             ))}
                         </CardContent>

@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { AddCategoryState, AddTableState, AddTaskState, AddWorkspaceState } from "./formStates";
-import { FormSchemaAddCategory, FormSchemaAddTable, FormSchemaAddTask, FormSchemaAddWorkspace } from "./formSchemas";
+import { FormSchemaAddCategory, FormSchemaAddTable, FormSchemaAddTask, FormSchemaAddWorkspace, FormSchemaModifyTask } from "./formSchemas";
 import prisma from "@/utils/db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/options";
@@ -248,6 +248,91 @@ export async function addNewTask(
               id: tableId
             }
           }
+        }})
+
+    } catch(error) {
+        return {
+          errorMessage: (<Error>error).message
+      }
+    }
+
+    revalidatePath('/workspaces')
+    return {successMessage: 'Tallennettu'}
+}
+
+export async function deleteTaskById(taskId:string) {
+  try {
+    const session = await getServerSession(authOptions)
+  
+    if (!session || !session.user) {
+      throw new Error("Kirjaudu sisään")
+    }
+
+    await prisma.task.delete({where: {
+      id: taskId
+    }})
+
+    revalidatePath('/workspaces')
+  } catch (error) {
+    throw new Error((error as Error).message);
+  }
+  
+}
+
+export async function modifyTask(
+  taskId: string,
+  prevState: AddTaskState,
+  formData: FormData,
+) {
+ 
+    const validatedFields = FormSchemaModifyTask.safeParse({
+        description: formData.get('description'),
+        title: formData.get('title'),
+        category: formData.get('category')
+      });
+      
+      if (!validatedFields.success) {
+          return {
+            errors: validatedFields.error.flatten().fieldErrors,
+            errorMessage: 'Täytä tarvittavat tiedot',
+          };
+        }
+    
+        const { description, title, category
+        } = validatedFields.data
+  
+    try {
+    
+        const task = await prisma.task.findUnique({where: {
+          id: taskId
+        }})
+
+        if (!task) {
+          throw new Error("Tehtävää ei löytynyt")
+        }
+
+        const table = await prisma.table.findUnique({where: {id: task.tableId}})
+
+        if (!table) {
+          throw new Error("Taulua ei löytynyt")
+        }
+
+        const currentCategories = table.categories
+
+        if (!currentCategories.includes(category)) {
+          throw new Error("Virheellinen kategoria")
+        }
+
+        const session = await getServerSession(authOptions)
+  
+        if (!session || !session.user) {
+          throw new Error("Kirjaudu sisään")
+        }
+
+        await prisma.task.update({where: {id: taskId}, data: {
+          title,
+          description,
+          category,
         }})
 
     } catch(error) {

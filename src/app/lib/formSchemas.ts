@@ -18,3 +18,9 @@ export const FormSchemaAddTable = z.object({
     description: z.coerce.string(),
     title: z.coerce.string(),
   })
+
+  export const FormSchemaModifyTask = z.object({
+    description: z.coerce.string(),
+    title: z.coerce.string(),
+    category: z.coerce.string(),
+  })
