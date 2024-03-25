@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 
 export default function AddNewWorkspaceForm() {
 
-    const initialState = { errorMessage: null, successMessage: null, errors: {} };
+    const initialState = { errorMessage: '', successMessage: undefined, errors: undefined };
     
     const [state, dispatch] = useFormState(addNewWorkspace, initialState);
 

@@ -4,7 +4,6 @@ import { revalidatePath } from "next/cache";
 import { AddCategoryState, AddTableState, AddTaskState, AddWorkspaceState } from "./formStates";
 import { FormSchemaAddCategory, FormSchemaAddTable, FormSchemaAddTask, FormSchemaAddWorkspace } from "./formSchemas";
 import prisma from "@/utils/db";
-import { getUser } from "./data";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/options";
 
@@ -12,7 +11,7 @@ import { authOptions } from "../api/auth/[...nextauth]/options";
 
 export async function addNewWorkspace(
   prevState: AddWorkspaceState,
-  formData: FormData
+  formData: FormData 
 ) {
  
     const validatedFields = FormSchemaAddWorkspace.safeParse({
@@ -50,13 +49,13 @@ export async function addNewWorkspace(
             }
             
         })
-
-        revalidatePath('/workspaces')
-        return {successMessage: 'Tallennettu'}
     } catch(error) {
         return {
           errorMessage: error instanceof Error ? error.message : "An error occurred",          };
     }
+
+    revalidatePath('/workspaces')
+    return {successMessage: 'Tallennettu'}
 }
 
 export async function addNewTable(
@@ -196,7 +195,7 @@ export async function addNewTask(
   tableId: string,
   category: string,
   prevState: AddTaskState,
-  formData: FormData
+  formData: FormData,
 ) {
  
     const validatedFields = FormSchemaAddTask.safeParse({
@@ -251,10 +250,12 @@ export async function addNewTask(
           }
         }})
 
-        revalidatePath('/workspaces')
-        return {successMessage: 'Tallennettu'}
     } catch(error) {
         return {
-          errorMessage: error instanceof Error ? error.message : "An error occurred",          };
+          errorMessage: (<Error>error).message
+      }
     }
+
+    revalidatePath('/workspaces')
+    return {successMessage: 'Tallennettu'}
 }

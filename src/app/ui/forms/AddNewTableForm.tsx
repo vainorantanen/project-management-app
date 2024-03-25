@@ -13,7 +13,7 @@ interface AddNewTableProps {
 
 export default function AddNewTableForm({workspaceId}: AddNewTableProps) {
 
-    const initialState = { errorMessage: null, successMessage: null, errors: {} };
+  const initialState = { errorMessage: '', successMessage: undefined, errors: undefined };
     
     const [state, dispatch] = useFormState(addNewTable.bind(null, workspaceId), initialState);
 

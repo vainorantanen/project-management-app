@@ -13,7 +13,7 @@ interface AddNewCategoryProps {
 
 export default function AddNewCategoryForm({tableId}: AddNewCategoryProps) {
 
-    const initialState = { errorMessage: null, successMessage: null, errors: {} };
+  const initialState = { errorMessage: '', successMessage: undefined, errors: undefined };
     
     const [state, dispatch] = useFormState(addNewCategoryToTable.bind(null, tableId), initialState);
 
