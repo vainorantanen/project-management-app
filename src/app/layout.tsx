@@ -7,7 +7,7 @@ import { AuthProvider } from "./Providers";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Proju",
+  title: "Project Management App",
   description: "Manage Projects",
 };
 

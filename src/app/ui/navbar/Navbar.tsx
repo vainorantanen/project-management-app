@@ -49,7 +49,7 @@ export default function Navbar() {
       <div className="container mx-auto flex items-center justify-between">
         <div className="flex items-center mr-1">
           <button className="text-black text-2xl font-bold hover:underline">
-            <Link href="/">Proju</Link>
+            <Link href="/">Project Management App</Link>
           </button>
         </div>
         <div className="hidden lg:flex space-x-4">
@@ -71,7 +71,7 @@ export default function Navbar() {
                 <DropdownMenuLabel>Oma tili</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>
-                <Link href={`/profiili`} className="flex">
+                <Link href={`/profile`} className="flex">
                 <FaUser className="mr-2 h-4 w-4" />
                 <span>Profiili</span>
                   </Link>
@@ -89,7 +89,7 @@ export default function Navbar() {
       </SheetTrigger>
       <SheetContent>
         <SheetHeader>
-          <SheetTitle>Proju</SheetTitle>
+          <SheetTitle>Project Management App</SheetTitle>
         </SheetHeader>
         <div>
         {!session && (
@@ -100,7 +100,7 @@ export default function Navbar() {
         {session && (
           <div className="flex flex-col gap-2">
             <ShadButton>
-        <Link href={`/profiili`} className="flex">
+        <Link href={`/profile`} className="flex">
           <FaUser className="mr-2 h-4 w-4" />
           <span>Profiili</span>
         </Link>

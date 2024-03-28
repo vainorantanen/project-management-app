@@ -1,6 +1,7 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/options"
 import { getTablesByWorkspaceId, getWorkspaceById } from "@/app/lib/data"
 import AddNewTableModal from "@/app/ui/modals/AddNewTableModal"
+import InviteNewParticipantWorkspaceModal from "@/app/ui/modals/InviteNewParticipantWorkspaceModal"
 import { Card, CardDescription, CardTitle } from "@/components/ui/card"
 import { getServerSession } from "next-auth"
 import Link from "next/link"
@@ -28,6 +29,7 @@ export default async function Page({params}:any) {
         <div>
             <h1>{workspace.title}</h1>
             <AddNewTableModal workspaceId={workspace.id} />
+            <InviteNewParticipantWorkspaceModal workspaceId={workspace.id} />
             {tables && tables.length > 0 ? (
               tables.map(t => (
                 <Link key={t.id} href={`/workspaces/${workspace.id}/tables/${t.id}`}>
