@@ -6,6 +6,7 @@ import { FormSchemaAddCategory, FormSchemaAddTable, FormSchemaAddTask, FormSchem
 import prisma from "@/utils/db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/options";
+import { WorkspaceInvitationStatus } from "./types";
 
 // server actions
 
@@ -343,4 +344,98 @@ export async function modifyTask(
 
     revalidatePath('/workspaces')
     return {successMessage: 'Tallennettu'}
+}
+
+export async function sendWorkspaceInvitation(workspaceId: string, email: string) {
+  try {
+
+    const receiverUser = await prisma.user.findUnique({where: {email}})
+
+    if (!receiverUser) {
+      throw new Error("No receiver user found")
+    }
+
+  const workspace = await prisma.workspace.findUnique({
+      where: {
+          id: workspaceId
+      }
+  })
+
+  if (!workspace) {
+      throw new Error("No workspace")
+  }
+
+  const session = await getServerSession(authOptions)
+  
+  if (!session || !session.user) {
+      throw new Error("Log in")
+  }
+
+  await prisma.workspaceInvitation.create({
+      data: {
+         senderUser: {
+          connect: {
+              id: session.user.id
+          }
+         },
+         receiverUser: {
+          connect: {
+              id: receiverUser.id
+          }
+         },
+         status: WorkspaceInvitationStatus.PENDING,
+         workspace: {
+          connect: {
+              id: workspace.id
+          }
+         }
+      }
+  })
+
+  revalidatePath('/')
+  return {success: "Invitation sent"}
+
+  } catch (error) {
+    console.log(error)
+    return {error: (error as Error).message}
+  }
+}
+
+export async function modifyWorkspaceInvitationState(invitationId: string,
+  status: WorkspaceInvitationStatus) {
+  
+    try {
+      const session = await getServerSession(authOptions)
+  
+      if (!session || !session.user) {
+          throw new Error("Log in")
+      }
+
+      const invitation = await prisma.workspaceInvitation.findUnique({
+        where: {
+          id: invitationId,
+          receiverUserId: session.user.id
+        }
+      })
+
+      if (!invitation) {
+        throw new Error("No invitation found")
+      }
+
+      await prisma.workspaceInvitation.update({
+        where: {
+          id: invitation.id
+        },
+        data: {
+          status: status
+        }
+      })
+
+      // modify additional data
+
+      revalidatePath('/profile')
+
+    } catch (error) {
+      console.log(error)
+    }
 }

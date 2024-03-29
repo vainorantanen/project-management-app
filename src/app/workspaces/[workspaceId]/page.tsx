@@ -26,10 +26,15 @@ export default async function Page({params}:any) {
     const tables = await getTablesByWorkspaceId(workspace.id)
 
     return (
-        <div>
+        <div className="flex flex-col gap-4 justify-center my-4">
             <h1>{workspace.title}</h1>
+            <p className="whitespace-break-spaces">{workspace.description}</p>
+            <div className="flex flex-row flex-wrap gap-1">
             <AddNewTableModal workspaceId={workspace.id} />
             <InviteNewParticipantWorkspaceModal workspaceId={workspace.id} />
+              </div>
+              <h1>Taulut</h1>
+              <div className="flex flex-row gap-2 flex-wrap">
             {tables && tables.length > 0 ? (
               tables.map(t => (
                 <Link key={t.id} href={`/workspaces/${workspace.id}/tables/${t.id}`}>
@@ -42,6 +47,7 @@ export default async function Page({params}:any) {
             ) : (
               <p>Ei tauluja</p>
             )}
+            </div>
         </div>
     )
 }

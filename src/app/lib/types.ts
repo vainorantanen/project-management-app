@@ -3,5 +3,5 @@
 export enum WorkspaceInvitationStatus {
     PENDING = 'PENDING',
     ACCEPTED = 'ACCEPTED',
-    REJECT = 'REJECTED'
+    REJECTED = 'REJECTED'
 }

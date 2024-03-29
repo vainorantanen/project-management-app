@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button"
 import { PiPlusCircleDuotone } from "react-icons/pi"
 import AddNewTableForm from "../forms/AddNewTableForm"
 import InviteNewParticipantWorkspaceForm from "../forms/InviteNewParticipantWorkspaceForm"
+import { sendWorkspaceInvitation } from "@/app/lib/actions"
 
 interface AddNewTableProps {
     workspaceId: string
@@ -29,7 +30,7 @@ export default function InviteNewParticipantWorkspaceModal({workspaceId}: AddNew
     <DialogHeader>
       <DialogTitle>Invite new participant</DialogTitle>
     </DialogHeader>
-        <InviteNewParticipantWorkspaceForm workspaceId={workspaceId} />
+        <InviteNewParticipantWorkspaceForm workspaceId={workspaceId} sendWorkspaceInviation={sendWorkspaceInvitation}/>
   </DialogContent>
         </Dialog>
     )

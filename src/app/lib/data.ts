@@ -118,3 +118,65 @@ export async function getTasksByTableId(tableId:string) {
         throw new Error(er.message)
     }
 }
+
+export async function getUserSentWorkspaceInvitations() {
+    noStore()
+    try {
+
+        const session = await getServerSession(authOptions)
+
+        if (!session || !session.user) {
+            throw new Error("Kirjaudu sisään")
+        }
+
+
+        const res = await prisma.workspaceInvitation.findMany({
+            where: {
+                senderUserId: session.user.id
+            },
+            include: {
+                workspace: {
+                    select: {
+                        title: true
+                    }
+                }
+            }
+        })
+
+        return res
+    } catch (error) {
+        const er = error as Error
+        throw new Error(er.message)
+    }
+}
+
+export async function getUserReceivedWorkspaceInvitations() {
+    noStore()
+    try {
+
+        const session = await getServerSession(authOptions)
+
+        if (!session || !session.user) {
+            throw new Error("Kirjaudu sisään")
+        }
+
+
+        const res = await prisma.workspaceInvitation.findMany({
+            where: {
+                receiverUserId: session.user.id
+            },
+            include: {
+                workspace: {
+                    select: {
+                        title: true
+                    }
+                }
+            }
+        })
+
+        return res
+    } catch (error) {
+        const er = error as Error
+        throw new Error(er.message)
+    }
+}

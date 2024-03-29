@@ -18,23 +18,27 @@ export default async function Page() {
     const usersWorkspaces = await getUsersCreatedWorkspaces()
 
     return (
-        <div>
-            <h1>Työtilat</h1>
+        <div className="flex flex-col gap-4 justify-center my-4">
+            <h1 className="text-center">Työtilat</h1>
             <AddNewWorkspaceModal />
-            <h1>Luomasi työtilat</h1>
+            <h1 className="text-center">Luomasi työtilat</h1>
+            <div className="flex flex-wrap gap-2 my-8 justify-center w-full h-auto max-w-5xl">
             {usersWorkspaces && usersWorkspaces.length > 0 ? (
               usersWorkspaces.map(w => (
-                <Link key={w.id} href={`/workspaces/${w.id}`}>
+                <div key={w.id}>
+                <Link href={`/workspaces/${w.id}`}>
                   <Card>
                     <CardTitle>{w.title}</CardTitle>
-                    <CardDescription>{w.description}</CardDescription>
+                    <CardDescription className="whitespace-break-spaces">{w.description}</CardDescription>
                   </Card>
                 </Link>
+                </div>
               ))
             ) : (
               <p>Ei työtiloja</p>
             )}
-            <h1>Työtilat, joissa olet osallisena</h1>
+            </div>
+            <h1 className="text-center">Työtilat, joissa olet osallisena</h1>
         </div>
     )
 }
