@@ -29,6 +29,7 @@ export default async function Page({params}:any) {
         <div className="flex flex-col gap-4 justify-center my-4">
             <h1>{workspace.title}</h1>
             <p className="whitespace-break-spaces">{workspace.description}</p>
+            {workspace.participantIds}
             <div className="flex flex-row flex-wrap gap-1">
             <AddNewTableModal workspaceId={workspace.id} />
             <InviteNewParticipantWorkspaceModal workspaceId={workspace.id} />

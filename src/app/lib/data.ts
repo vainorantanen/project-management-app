@@ -180,3 +180,28 @@ export async function getUserReceivedWorkspaceInvitations() {
         throw new Error(er.message)
     }
 }
+
+export async function getUsersParticipantWorkspaces() {
+    noStore()
+    try {
+
+        const session = await getServerSession(authOptions)
+
+        if (!session || !session.user) {
+            throw new Error("Kirjaudu sisään")
+        }
+
+        const res = await prisma.workspace.findMany({
+            where: {
+                participantIds: {
+                    has: session.user.id
+                }
+            }
+        })
+
+        return res
+    } catch (error) {
+        const er = error as Error
+        throw new Error(er.message)
+    }
+}

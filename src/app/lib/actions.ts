@@ -432,6 +432,21 @@ export async function modifyWorkspaceInvitationState(invitationId: string,
       })
 
       // modify additional data
+      if (status === WorkspaceInvitationStatus.ACCEPTED) {
+        // add user to workspace participants
+        await prisma.workspace.update({
+          where: {id: invitation.workspaceId},
+          data: {
+            participants: {
+              connect: {
+                id: invitation.receiverUserId
+              }
+            }
+          }
+        })
+      } else if (status === WorkspaceInvitationStatus.REJECTED) {
+        // do something
+      }
 
       revalidatePath('/profile')
 

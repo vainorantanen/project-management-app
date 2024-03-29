@@ -32,12 +32,16 @@ export default async function Page() {
                 userReceivedWorkspaceInvitations.map(invitation => (
                     <div key={invitation.id}>
                         <p>{invitation.workspace.title}, {invitation.status}</p>
-                        <ModifyWorkspaceInvitationButton invitationId={invitation.id}
-                        status={WorkspaceInvitationStatus.ACCEPTED}
-                        modifyWorkspaceInvitationStatus={modifyWorkspaceInvitationState}/>
-                        <ModifyWorkspaceInvitationButton invitationId={invitation.id}
-                        status={WorkspaceInvitationStatus.REJECTED}
-                        modifyWorkspaceInvitationStatus={modifyWorkspaceInvitationState}/>
+                        {invitation.status === WorkspaceInvitationStatus.PENDING && (
+                            <div>
+                                <ModifyWorkspaceInvitationButton invitationId={invitation.id}
+                                status={WorkspaceInvitationStatus.ACCEPTED}
+                                modifyWorkspaceInvitationStatus={modifyWorkspaceInvitationState}/>
+                                <ModifyWorkspaceInvitationButton invitationId={invitation.id}
+                                status={WorkspaceInvitationStatus.REJECTED}
+                                modifyWorkspaceInvitationStatus={modifyWorkspaceInvitationState}/>
+                            </div>
+                        )}
                     </div>
                 ))
             )}
